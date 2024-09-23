@@ -12,7 +12,7 @@ local player = {
         width = 172,
         height = 124
     },
-    images = {
+    mouvements = {
         down = {
             TotalFrames = 4,
             steps = {}
@@ -113,9 +113,9 @@ local player = {
 
 local function init()
 
-    for k, v in pairs(player.images) do
-        for i = 1, player.images[k].TotalFrames do
-            table.insert(player.images[k].steps, love.graphics.newImage("graphics/character/"..k.."/" .. (i-1) .. ".png"))
+    for k, v in pairs(player.mouvements) do
+        for i = 1, player.mouvements[k].TotalFrames do
+            table.insert(player.mouvements[k].steps, love.graphics.newImage("graphics/character/"..k.."/" .. (i-1) .. ".png"))
         end      
     end
 end
@@ -187,13 +187,13 @@ function player:Update(dt)
     end
 
     player.currentFrame = player.currentFrame + player.speed * dt
-    if player.currentFrame >= (player.images[player.currentAnimation].TotalFrames+1) then
+    if player.currentFrame >= (player.mouvements[player.currentAnimation].TotalFrames+1) then
         player.currentFrame = 1
     end
 end
 
 function player:Draw()
-    love.graphics.draw(player.images[player.currentAnimation].steps[math.floor(player.currentFrame)], player.x, player.y, nil, player.zoom_x, player.zoom_y)
+    love.graphics.draw(player.mouvements[player.currentAnimation].steps[math.floor(player.currentFrame)], player.x, player.y, nil, player.zoom_x, player.zoom_y)
 end
 
 init()

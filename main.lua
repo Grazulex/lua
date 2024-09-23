@@ -11,13 +11,15 @@ function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
     love.window.setTitle(game.title)
 
-    music:PlayMusic()
+    --music:PlayMusic()
 end
 
 function love.update(dt)
+    game:Update(dt)
     player:Update(dt)
 end
 
 function love.draw()
+    game:Draw()
     player:Draw()
 end
