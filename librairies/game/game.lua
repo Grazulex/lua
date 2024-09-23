@@ -9,64 +9,40 @@ Game = {
         {
             color = "Green",
             action = "grass",
-            x = 100,
-            y = 100
-        },
-        {
-            color = "Brown",
-            action = "walk",
-            x = 200,
-            y = 100
-        },
-        {
-            color = "Light",
-            action = "love",
             x = 300,
-            y = 100
+            y = 300
         },
         {
             color = "Pink",
             action = "food",
-            x = 400,
-            y = 100
-        },
-        {
-            color = "Purple",
-            action = "swim",
-            x = 500,
-            y = 100
+            x = 300,
+            y = 400
         },
     },
     chicken = {
         {
             color = "Green",
-            action = "idle",
-            x = 100,
-            y = 200
-        },
-        {
-            color = "Red",
             action = "walk",
-            x = 200,
-            y = 200
-        },
-        {
-            color = "Brown",
-            action = "jump",
-            x = 300,
-            y = 200
-        },
-        {
-            color = "Yellow",
-            action = "food",
-            x = 400,
-            y = 200
+            x = 2900,
+            y = 300
         },
         {
             color = "Blue",
+            action = "look",
+            x = 2900,
+            y = 400
+        },
+        {
+            color = "Red",
+            action = "food",
+            x = 2900,
+            y = 500
+        },
+        {
+            color = "Yellow",
             action = "love",
-            x = 500,
-            y = 200
+            x = 2900,
+            y = 600
         },
     }
 }
@@ -85,12 +61,12 @@ function Game:init()
     end
 end
 
-function Game:update(dt)
+function Game:update(dt, map)
     for i, cow in ipairs(self.cows) do
-        NewCow[i]:update(dt)
+        NewCow[i]:update(dt, map)
     end
     for i, chicken in ipairs(self.chicken) do
-        NewChicken[i]:update(dt)
+        NewChicken[i]:update(dt, map)
     end
 end
 

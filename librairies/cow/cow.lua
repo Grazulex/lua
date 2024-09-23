@@ -74,7 +74,7 @@ local Cow = { } do
         return o
     end
 
-    function Cow:update(dt)
+    function Cow:update(dt, map)
         -- Initialize or update the timer for direction change
         if not self.directionTimer then
             self.directionTimer = 0
@@ -117,8 +117,10 @@ local Cow = { } do
             self.y = self.y
         end
 
-        -- Check screen boundaries and change direction if necessary
-        local screenWidth, screenHeight = love.graphics.getDimensions()
+        -- Check screen boundaries and change direction if necessary 
+        local screenWidth = map.width * map.tilewidth
+        local screenHeight = map.height * map.tileheight
+
         if self.x < 0 then
             self.x = 0
             self.direction = 2 -- Change direction to right
@@ -135,13 +137,36 @@ local Cow = { } do
             self.direction = 1 -- Change direction to up
         end
 
-        -- Invert the animation if moving left
+        -- Flip the image if the chicken is moving left
         if self.direction == 4 then
             self.zoom_x = -2
         else
             self.zoom_x = 2
         end
 
+        if map.layers["Limit_cow"] then
+            for i, obj in pairs(map.layers["Limit_cow"].objects) do
+                if self.x < obj.x + obj.width and
+                   self.x + self.tile.width * math.abs(self.zoom_x) > obj.x and
+                   self.y < obj.y + obj.height and
+                   self.y + self.tile.height * self.zoom_y > obj.y then
+                    -- Collision detected, handle it here
+                    if self.direction == 1 then
+                        self.y = obj.y + obj.height
+                    elseif self.direction == 2 then
+                        self.x = obj.x - self.tile.width * math.abs(self.zoom_x)
+                    elseif self.direction == 3 then
+                        self.y = obj.y - self.tile.height * self.zoom_y
+                    elseif self.direction == 4 then
+                        self.x = obj.x + obj.width
+                    end
+                    -- Change direction after collision
+                    local directions = {1, 2, 3, 4}
+                    table.remove(directions, self.direction)
+                    self.direction = directions[math.random(#directions)]
+                end
+            end
+        end
 
 
         self.currentFrame = self.currentFrame + self.speed_frame * dt

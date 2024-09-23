@@ -4,12 +4,12 @@ local Music = require "librairies.music.music"
 local sound = Music
 
 Player = {
-    x = 2700,
-    y = 2000,
+    x = 2770, --2770
+    y = 2000, --2000
     speed_frame = 4,
-    speed_move = 2,
-    zoom_x = 0.7,
-    zomm_y = 0.7,
+    speed_move = 120,
+    zoom_x = 0.8,
+    zoom_y = 0.8,
     tile = {
         width = 172,
         height = 124
@@ -126,23 +126,28 @@ end
 function Player:update(dt, cam)
     local isMoving = false
 
+    local vx = 0
+    local vy = 0
+
     if love.keyboard.isDown("right") then
-        self.x = self.x + self.speed_move
+        vx = self.speed_move
         self.currentAnimation = "right"
         isMoving = true
     elseif love.keyboard.isDown("left") then
-        self.x = self.x - self.speed_move
+        vx = self.speed_move *-1
         self.currentAnimation = "left"
         isMoving = true
     elseif love.keyboard.isDown("up") then
-        self.y = self.y - self.speed_move
+        vy = self.speed_move * -1
         self.currentAnimation = "up"
         isMoving = true
     elseif love.keyboard.isDown("down") then
-        self.y = self.y + self.speed_move
+        vy = self.speed_move
         self.currentAnimation = "down"
         isMoving = true
     end
+
+    self.collider:setLinearVelocity(vx, vy)
 
     if not isMoving then
         if self.currentAnimation == "right" then
