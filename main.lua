@@ -7,7 +7,10 @@ local game= Game
 local player = Player
 local music = Music
 
+mainFont = love.graphics.newFont("font/LycheeSoda.ttf", 18)
+
 function love.load()
+    love.graphics.setFont(mainFont)
     love.window.setMode(game.width, game.height)
     love.graphics.setDefaultFilter('nearest', 'nearest')
     love.window.setTitle(game.title)
@@ -21,6 +24,7 @@ function love.update(dt)
 end
 
 function love.draw()
+    love.graphics.print("Loading...", 100, 100)
     game:draw()
     player:draw()
 end
