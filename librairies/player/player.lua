@@ -1,11 +1,13 @@
+local love = require("love")
 local Music = require "librairies.music.music"
 
-local music = Music
--- Meta class
-local player = {
+local sound = Music
+
+Player = {
     x = 180,
     y = 380,
-    speed = 3,
+    speed_frame = 4,
+    speed_move = 2,
     zoom_x = 0.5,
     zomm_y = 0.5,
     tile = {
@@ -111,58 +113,58 @@ local player = {
 
 -- Base class method new
 
-local function init()
+function Player:init()
 
-    for k, v in pairs(player.mouvements) do
-        for i = 1, player.mouvements[k].TotalFrames do
-            table.insert(player.mouvements[k].steps, love.graphics.newImage("graphics/character/"..k.."/" .. (i-1) .. ".png"))
+    for k, v in pairs(self.mouvements) do
+        for i = 1, self.mouvements[k].TotalFrames do
+            table.insert(self.mouvements[k].steps, love.graphics.newImage("graphics/character/"..k.."/" .. (i-1) .. ".png"))
         end      
     end
 end
 
 
-function player:Update(dt)
+function Player:update(dt)
     local isMoving = false
 
     if love.keyboard.isDown("right") then
-        player.x = player.x + player.speed
-        player.currentAnimation = "right"
+        self.x = self.x + self.speed_move
+        self.currentAnimation = "right"
         isMoving = true
     elseif love.keyboard.isDown("left") then
-        player.x = player.x - player.speed
-        player.currentAnimation = "left"
+        self.x = self.x - self.speed_move
+        self.currentAnimation = "left"
         isMoving = true
     elseif love.keyboard.isDown("up") then
-        player.y = player.y - player.speed
-        player.currentAnimation = "up"
+        self.y = self.y - self.speed_move
+        self.currentAnimation = "up"
         isMoving = true
     elseif love.keyboard.isDown("down") then
-        player.y = player.y + player.speed
-        player.currentAnimation = "down"
+        self.y = self.y + self.speed_move
+        self.currentAnimation = "down"
         isMoving = true
     end
 
     if not isMoving then
-        if player.currentAnimation == "right" then
-            player.currentAnimation = "right_idle"
-        elseif player.currentAnimation == "left" then
-            player.currentAnimation = "left_idle"
-        elseif player.currentAnimation == "up" then
-            player.currentAnimation = "up_idle"
-        elseif player.currentAnimation == "down" then
-            player.currentAnimation = "down_idle"
+        if self.currentAnimation == "right" then
+            self.currentAnimation = "right_idle"
+        elseif self.currentAnimation == "left" then
+            self.currentAnimation = "left_idle"
+        elseif self.currentAnimation == "up" then
+            self.currentAnimation = "up_idle"
+        elseif self.currentAnimation == "down" then
+            self.currentAnimation = "down_idle"
         end
     end
 
-    if love.keyboard.isDown("a") and not player.actionPressed then
-        player.actionPressed = true
-        local currentAction = player.currentAnimation:match("_(%a+)$")
-        local currentDirection = player.currentAnimation:match("^(%a+)_")
+    if love.keyboard.isDown("a") and not self.actionPressed then
+        self.actionPressed = true
+        local currentAction = self.currentAnimation:match("_(%a+)$")
+        local currentDirection = self.currentAnimation:match("^(%a+)_")
         local nextAction = nil
 
         if currentAction then
             local foundCurrent = false
-            for actionName, _ in pairs(player.actions) do
+            for actionName, _ in pairs(self.actions) do
                 if foundCurrent then
                     nextAction = actionName
                     break
@@ -172,30 +174,30 @@ function player:Update(dt)
                 end
             end
             if not nextAction then
-                nextAction = next(player.actions)
+                nextAction = next(self.actions)
             end
         else
-            nextAction = next(player.actions)
+            nextAction = next(self.actions)
         end
 
-        player.currentAnimation = currentDirection .. "_" .. nextAction
-        music:PlaySound(player.actions[nextAction].sound)
+        self.currentAnimation = currentDirection .. "_" .. nextAction
+        sound:playSound(self.actions[nextAction].sound)
     end
 
     if not love.keyboard.isDown("a") then
-        player.actionPressed = false
+        self.actionPressed = false
     end
 
-    player.currentFrame = player.currentFrame + player.speed * dt
-    if player.currentFrame >= (player.mouvements[player.currentAnimation].TotalFrames+1) then
-        player.currentFrame = 1
+    self.currentFrame = self.currentFrame + self.speed_frame * dt
+    if self.currentFrame >= (self.mouvements[self.currentAnimation].TotalFrames+1) then
+        self.currentFrame = 1
     end
 end
 
-function player:Draw()
-    love.graphics.draw(player.mouvements[player.currentAnimation].steps[math.floor(player.currentFrame)], player.x, player.y, nil, player.zoom_x, player.zoom_y)
+function Player:draw()
+    love.graphics.draw(self.mouvements[self.currentAnimation].steps[math.floor(self.currentFrame)], self.x, self.y, nil, self.zoom_x, self.zoom_y)
 end
 
-init()
+Player:init()
 
-return player
+return Player

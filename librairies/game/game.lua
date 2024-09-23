@@ -1,32 +1,65 @@
 local Cow = require "librairies.cow.cow"
 
-Cow1 = Cow:Create("Brown", "walk")
-Cow2 = Cow:Create("Green", "grass")
-
-
-local game = {
+Game = {
     title = "Farmer & co",
     width = 800,
     height = 620,
-    cows = 2,
+    cows = {
+        {
+            color = "Green",
+            action = "grass",
+            x = 100,
+            y = 100
+        },
+        {
+            color = "Brown",
+            action = "walk",
+            x = 200,
+            y = 100
+        },
+        {
+            color = "Light",
+            action = "love",
+            x = 300,
+            y = 100
+        },
+        {
+            color = "Pink",
+            action = "food",
+            x = 400,
+            y = 100
+        },
+        {
+            color = "Purple",
+            action = "swim",
+            x = 500,
+            y = 100
+        },
+    },
     chicken = 5,
 }
 
-local function init()
+NewCow = {}
 
+function Game:init()
+    for i, cow in ipairs(self.cows) do
+        NewCow[i] = Cow:new(nil)
+        NewCow[i]:init(cow.color, cow.action, cow.x, cow.y)
+    end
 end
 
-
-function game:Update(dt)
-    Cow1:Update(dt)
-    Cow2:Update(dt)
+function Game:update(dt)
+    for i, cow in ipairs(self.cows) do
+        NewCow[i]:update(dt)
+    end
 end
 
-function game:Draw()
-    Cow1:Draw(100, 100)
-    Cow2:Draw(200, 100)
+function Game:draw()
+    for i, cow in ipairs(self.cows) do
+        NewCow[i]:draw()
+    end
 end
 
-init()
+Game:init()
 
-return game
+return Game
