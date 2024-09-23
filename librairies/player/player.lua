@@ -4,12 +4,12 @@ local Music = require "librairies.music.music"
 local sound = Music
 
 Player = {
-    x = 180,
-    y = 380,
+    x = 2700,
+    y = 2000,
     speed_frame = 4,
     speed_move = 2,
-    zoom_x = 0.5,
-    zomm_y = 0.5,
+    zoom_x = 0.7,
+    zomm_y = 0.7,
     tile = {
         width = 172,
         height = 124
@@ -123,7 +123,7 @@ function Player:init()
 end
 
 
-function Player:update(dt)
+function Player:update(dt, cam)
     local isMoving = false
 
     if love.keyboard.isDown("right") then
@@ -160,6 +160,7 @@ function Player:update(dt)
         self.actionPressed = true
         local currentAction = self.currentAnimation:match("_(%a+)$")
         local currentDirection = self.currentAnimation:match("^(%a+)_")
+        currentDirection = currentDirection or "down"
         local nextAction = nil
 
         if currentAction then
@@ -192,10 +193,26 @@ function Player:update(dt)
     if self.currentFrame >= (self.mouvements[self.currentAnimation].TotalFrames+1) then
         self.currentFrame = 1
     end
+
+    cam:lookAt(self.x, self.y)
+
+    local screenWidth, screenHeight = love.graphics.getDimensions()
+    if cam.x < screenWidth/2 then
+        cam.x = screenWidth/2
+    end
+    if cam.y < screenHeight/2 then
+        cam.y = screenHeight/2
+    end
+    if cam.x > map.width * map.tilewidth - screenWidth/2 then
+        cam.x = map.width * map.tilewidth - screenWidth/2
+    end
+    if cam.y > map.height * map.tileheight - screenHeight/2 then
+        cam.y = map.height * map.tileheight - screenHeight/2
+    end
 end
 
 function Player:draw()
-    love.graphics.draw(self.mouvements[self.currentAnimation].steps[math.floor(self.currentFrame)], self.x, self.y, nil, self.zoom_x, self.zoom_y)
+    love.graphics.draw(self.mouvements[self.currentAnimation].steps[math.floor(self.currentFrame)], self.x, self.y, nil, self.zoom_x, self.zoom_y, self.tile.width/2, self.tile.height/2)
 end
 
 Player:init()

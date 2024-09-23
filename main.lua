@@ -15,16 +15,28 @@ function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
     love.window.setTitle(game.title)
 
+    sti = require 'librairies/sti'
+    camera = require 'librairies/hump/camera'
+    cam = camera()
+    map = sti('data/map.lua')
+
+
     music:playMusic()
 end
 
 function love.update(dt)
     game:update(dt)
-    player:update(dt)
+    player:update(dt, cam)
 end
 
 function love.draw()
-    love.graphics.print("Loading...", 100, 100)
-    game:draw()
-    player:draw()
+    cam:attach()
+        map:drawLayer(map.layers["Water"])
+        map:drawLayer(map.layers["Ground"])
+        map:drawLayer(map.layers["Ground2"])
+        map:drawLayer(map.layers["Bridge"])
+        love.graphics.print("Loading...", 100, 100)
+        game:draw()
+        player:draw()
+    cam:detach()
 end
